@@ -197,6 +197,81 @@ public class Main {
             System.out.println(e);
         }
     }
+    public static void updatetask(HashMap<String,ArrayList<String>> tasks ,String id,String newtaskstatus) {
+
+        boolean key_found=false;
+        String json_key = "", json_task_name = "", json_task_status = "";
+        int first_occurrence_key = -1, last_occurrence_key = 0;
+        int first_occurrence_task_name = -1, last_occurrence_task_name = 0;
+        int first_occurrence_task_details = -1, last_occurrence_task_details = 0;
+        try (BufferedReader reader = new BufferedReader(new FileReader(filepath))) {
+            String line=reader.readLine();
+
+            if(line==null){
+                System.out.println("There's nothing in the task file to update. Please add a task before updating.");
+            }
+            while ((line = reader.readLine()) != null) {
+                ArrayList<String> taskentry = new ArrayList<>();
+                if (line.equals("{") || line.equals("}")) {
+                    //do nothing
+                    continue;
+                }
+                String task_content = line;//storing the task details into a string
+                // Removing spaces and trailing commas
+                task_content = task_content.trim();
+                if (task_content.endsWith(",") == true) {
+                    task_content = task_content.substring(0, task_content.length() - 1);
+                }
+
+                if (task_content.startsWith("\"")) {
+                    first_occurrence_key = task_content.indexOf("\"");
+                    last_occurrence_key = task_content.indexOf("\"", first_occurrence_key + 1);
+                    json_key = task_content.substring(first_occurrence_key + 1, last_occurrence_key);
+
+                    first_occurrence_task_name = task_content.indexOf("[", last_occurrence_key);
+                    last_occurrence_task_name = task_content.indexOf(",", first_occurrence_task_name);
+                    json_task_name = task_content.substring(first_occurrence_task_name + 2, last_occurrence_task_name - 1);
+
+                    first_occurrence_task_details = task_content.indexOf("\"", last_occurrence_task_name + 1);
+                    last_occurrence_task_details = task_content.indexOf("\"", first_occurrence_task_details + 1);
+                    json_task_status = task_content.substring(first_occurrence_task_details + 1, last_occurrence_task_details);
+
+                }
+
+
+                taskentry.add(json_task_name);
+
+                if (json_key.equals(id)) {
+
+                    taskentry.add(newtaskstatus);
+                    key_found = true;
+                    tasks.put(json_key, taskentry);
+
+                } else {
+
+                    taskentry.add(json_task_status);
+                    tasks.put(json_key, taskentry);
+                }
+
+            }
+                if(key_found!=true){
+                    System.out.println("Invalid ID specified. Please provide a valid ID.");
+                }
+                else{
+                    System.out.println("Updated Task status of #"+id+" to "+newtaskstatus);
+                }
+
+                filewriter(tasks);
+
+
+
+
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
+
+
     public static void main(String[] args) {
         HashMap<String, ArrayList<String>> tasks = new HashMap<>();
         String check = args[0].toLowerCase();
@@ -219,6 +294,13 @@ public class Main {
             return;
             }
         }
+        else if(check.equals("update")){
+            if(args.length<3){
+                System.out.println(""" 
+                                  Please provide a valid command and task name. Example: 'update \"id\" \"new status\" 
+                                """);
+            }
+        }
 
         String command = args[0].toLowerCase();
         switch (command) {
@@ -231,6 +313,9 @@ public class Main {
                 break;
             case "delete":
                 delete(args[1],tasks);
+                break;
+            case "update":
+                updatetask(tasks,args[1],args[2]);//passing id and new status
                 break;
 
 
