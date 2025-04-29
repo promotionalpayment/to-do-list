@@ -9,7 +9,7 @@ public class Main {
     public static String filepath="taskmanager.json";
     public static void add(int id,HashMap<String,ArrayList<String>> tasks,String task){
 
-        String default_status="Not done.";
+        String default_status="Not done";
         String key=String.valueOf(id);
         ArrayList<String> tasks_details=new ArrayList<>();
         String json_key="",json_task_name="",json_task_status="";
@@ -23,7 +23,7 @@ public class Main {
                 tasks_details.add(task);
                 tasks_details.add(default_status);
                 tasks.put(key,tasks_details);
-                System.out.println("Task added successfully (ID:"+id+")");
+                System.out.println(Colors.GREEN+"Task added successfully (ID:"+id+")"+Colors.RESET);
                 filewriter(tasks);
 
             }
@@ -67,7 +67,7 @@ public class Main {
                 String localid=String.valueOf(Integer.parseInt(json_key)+1);
 
                 tasks.put(localid,newtask);
-                System.out.println("Task added successfully (ID:"+localid+")");
+                System.out.println(Colors.GREEN+"Task added successfully (ID:"+localid+")"+Colors.RESET);
                 filewriter(tasks);
 
             }
@@ -84,9 +84,9 @@ public class Main {
         int first_occurrence_task_details=-1,last_occurrence_task_details=0;
         try(BufferedReader reader=new BufferedReader(new FileReader(filepath))){
             String line=reader.readLine();
-            System.out.println("---------------------------------------------------------------------");
+            System.out.println("----------------------------------------------------------------------");
             System.out.printf("| %-20s | %-20s | %-20s |\n", "Task ID", "Task Name", "Task Status");
-            System.out.println("---------------------------------------------------------------------");
+            System.out.println("----------------------------------------------------------------------");
             boolean isempty=true;
             if(line==null||line.trim().equals("{}"))
             {
@@ -109,6 +109,7 @@ public class Main {
                     task_content=task_content.substring(0,task_content.length()-1);
                 }
                 if(line.startsWith("\"")) {
+
                     isempty=false;
                     first_occurrence_key = task_content.indexOf("\"");
                     last_occurrence_key = task_content.indexOf("\"", first_occurrence_key + 1);
@@ -121,17 +122,28 @@ public class Main {
                     first_occurrence_task_details = task_content.indexOf("\"", last_occurrence_task_name + 1);
                     last_occurrence_task_details = task_content.indexOf("\"", first_occurrence_task_details + 1);
                     json_task_status = task_content.substring(first_occurrence_task_details + 1, last_occurrence_task_details);
-                    System.out.printf("| %-20s | %-20s | %-20s |\n", json_key, json_task_name, json_task_status);
+                    if(json_task_status.equals("Not done")){
+                        System.out.printf(Colors.RED+"| %-20s | %-20s | %-20s |\n"+Colors.RESET, json_key, json_task_name, json_task_status);
+                    }
+                    else if(json_task_status.equals("In progress")) {
+                        System.out.printf(Colors.YELLOW+"| %-20s | %-20s | %-20s |\n"+Colors.RESET, json_key, json_task_name, json_task_status);
+                    }
+                    else if(json_task_status.equals("Done")){
+                        System.out.printf(Colors.GREEN+"| %-20s | %-20s | %-20s |\n"+Colors.RESET, json_key, json_task_name, json_task_status);
+                    }
+                    else{
+                        System.out.printf("| %-20s | %-20s | %-20s |\n", json_key, json_task_name, json_task_status);
+                    }
                 }
 
 
 
             }
-            System.out.println("---------------------------------------------------------------------");
+            System.out.println("----------------------------------------------------------------------");
 
         }
         catch(IOException e){
-            System.out.println("File is empty.");
+            System.out.println(Colors.RED+e+Colors.RESET);
         }
     }
     public static void delete(String id,HashMap<String,ArrayList<String>> tasks){
@@ -177,11 +189,11 @@ public class Main {
             }
             if(tasks.containsKey(id))
             {
-                System.out.println("Task #"+id+" has been deleted.");
+                System.out.println(Colors.GREEN+"Task #"+id+" has been deleted."+Colors.RESET);
                 tasks.remove(id);
 
             }else{
-                System.out.println("Invalid id. Please enter a valid id.");
+                System.out.println(Colors.RED+"Invalid id. Please enter a valid id."+Colors.RESET);
             }
             if(tasks.isEmpty()){
                 FileWriter file=new FileWriter(filepath);
@@ -208,7 +220,7 @@ public class Main {
             String line=reader.readLine();
 
             if(line==null){
-                System.out.println("There's nothing in the task file to update. Please add a task before updating.");
+                System.out.println(Colors.RED+"There's nothing in the task file to update. Please add a task before updating."+Colors.RESET);
             }
             while ((line = reader.readLine()) != null) {
                 ArrayList<String> taskentry = new ArrayList<>();
@@ -255,10 +267,10 @@ public class Main {
 
             }
                 if(key_found!=true){
-                    System.out.println("Invalid ID specified. Please provide a valid ID.");
+                    System.out.println(Colors.RED+"Invalid ID specified. Please provide a valid ID."+Colors.RESET);
                 }
                 else{
-                    System.out.println("Updated Task status of #"+id+" to "+newtaskstatus);
+                    System.out.println(Colors.GREEN+"Updated Task status of #"+id+" to "+newtaskstatus+Colors.RESET);
                 }
 
                 filewriter(tasks);
@@ -281,7 +293,7 @@ public class Main {
             String line=reader.readLine();
 
             if(line==null){
-                System.out.println("There's nothing in the task file to update. Please add a task before updating.");
+                System.out.println(Colors.RED+"There's nothing in the task file to update. Please add a task before updating."+Colors.RESET);
             }
             while ((line = reader.readLine()) != null) {
                 ArrayList<String> taskentry = new ArrayList<>();
@@ -328,10 +340,10 @@ public class Main {
 
             }
             if(key_found!=true){
-                System.out.println("Invalid ID specified. Please provide a valid ID.");
+                System.out.println(Colors.RED+"Invalid ID specified. Please provide a valid ID."+Colors.RESET);
             }
             else{
-                System.out.println("Updated Task status of #"+id+" to "+newtaskstatus);
+                System.out.println(Colors.GREEN+"Updated Task status of #"+id+" to "+newtaskstatus+Colors.RESET);
             }
 
             filewriter(tasks);
@@ -401,10 +413,10 @@ public class Main {
 
             }
             if(key_found!=true){
-                System.out.println("Invalid ID specified. Please provide a valid ID.");
+                System.out.println(Colors.RED+"Invalid ID specified. Please provide a valid ID."+Colors.RESET);
             }
             else{
-                System.out.println("Updated Task status of #"+id+" to "+newtaskstatus);
+                System.out.println(Colors.GREEN+"Updated Task status of #"+id+" to "+newtaskstatus+Colors.RESET);
             }
 
             filewriter(tasks);
@@ -427,7 +439,7 @@ public class Main {
             String line=reader.readLine();
 
             if(line==null){
-                System.out.println("There's nothing in the task file to update. Please add a task before updating.");
+                System.out.println(Colors.RED+"There's nothing in the task file to update. Please add a task before updating."+Colors.RESET);
             }
             while ((line = reader.readLine()) != null) {
                 ArrayList<String> taskentry = new ArrayList<>();
@@ -474,10 +486,10 @@ public class Main {
 
             }
             if(key_found!=true){
-                System.out.println("Invalid ID specified. Please provide a valid ID.");
+                System.out.println(Colors.RED+"Invalid ID specified. Please provide a valid ID."+Colors.RESET);
             }
             else{
-                System.out.println("Updated Task status of #"+id+" to "+newtaskstatus);
+                System.out.println(Colors.GREEN+"Updated Task status of #"+id+" to "+newtaskstatus+Colors.RESET);
             }
 
             filewriter(tasks);
@@ -486,7 +498,7 @@ public class Main {
 
 
         } catch (IOException e) {
-            System.out.println(e);
+            System.out.println(Colors.RED+e+Colors.RESET);
         }
     }
 
@@ -502,24 +514,24 @@ public class Main {
                 newfile.write("");
             }
             catch (IOException e){
-                System.out.println(e);
+                System.out.println(Colors.RED+e+Colors.RESET);
             }
         }
         if (check.equals("add")||check.equals("delete")) {
             if(args.length!=2){
-            System.out.println(""" 
+            System.out.println(Colors.RED+""" 
                                   Please provide a valid command and task name. Example: 'add \"task name\"'
                                                                                          'delete \"id\"'
-                                """);
+                                """+Colors.RESET);
                 return;
             }
 
         }
         else if(check.equals("update")){
             if(args.length!=3){
-                System.out.println(""" 
+                System.out.println(Colors.RED+""" 
                                   Please provide a valid command and task name. Example: 'update \"id\" \"new status\" 
-                                """);
+                                """+Colors.RESET);
                 return;
             }
 
@@ -527,9 +539,9 @@ public class Main {
         else if(check.equals("mark-done")||check.equals("mark-in-progress")||check.equals("mark-not-done"))
         {
             if(args.length!=2){
-                System.out.println(""" 
+                System.out.println(Colors.RED+""" 
                                   Please provide a valid command and task name. Example: 'mark-done \"id\"  
-                                """);
+                                """+Colors.RESET);
                 return;
             }
 
@@ -596,8 +608,16 @@ public class Main {
 
 
             } catch (IOException e) {
-                System.out.println(e);
+                System.out.println(Colors.RED+e+Colors.RESET);
             }
         }
+    public class Colors {
+        public static final String RESET = "\u001B[0m";
+        public static final String RED = "\u001B[31m";
+        public static final String GREEN = "\u001B[32m";
+        public static final String YELLOW = "\u001B[33m";
+        public static final String BLUE = "\u001B[34m";
+    }//ANSI escape codes for terminal text coloring
 
-    }
+
+}
