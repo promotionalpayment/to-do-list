@@ -86,3 +86,7 @@ The Task Manager is a command-line tool to help you manage tasks and their statu
    Feel free to open issues or pull requests if you want to contribute to the project.
 
 💡 This project is considered feature-complete for now. Future updates may come as needed or out of curiosity.
+
+## Roadmap
+
+This project is part of the [Task Tracker initiative](https://roadmap.sh/projects/task-tracker) on roadmap.sh.
