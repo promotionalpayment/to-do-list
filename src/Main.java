@@ -1019,7 +1019,7 @@ public class Main {
                 not_done(tasks,args[1]);
                 break;
             default:
-                System.out.println(Colors.RED+"Enter a valid commad."+Colors.RESET);    
+                System.out.println(Colors.RED+"Enter a valid command."+Colors.RESET);
 
 
 
