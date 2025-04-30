@@ -1018,6 +1018,8 @@ public class Main {
             case "mark-not-done":
                 not_done(tasks,args[1]);
                 break;
+            default:
+                System.out.println(Colors.RED+"Enter a valid commad."+Colors.RESET);    
 
 
 
